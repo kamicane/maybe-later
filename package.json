@@ -1,0 +1,9 @@
+{
+  "name": "maybe-later",
+  "version": "1.0.0",
+  "description": "defer function execution",
+  "main": "index.js",
+  "repository": "https://github.com/kamicane/maybe-later.git",
+  "author": "Valerio Proietti <kamicane@gmail.com>",
+  "license": "MIT"
+}
