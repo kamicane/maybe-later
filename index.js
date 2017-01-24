@@ -22,7 +22,7 @@ const push = function (collection, callback, deferrer) {
     })
   }
 
-  let ID = UID++
+  const ID = UID++
   collection[ID] = callback
 
   return function clear () {
@@ -46,7 +46,7 @@ if (global.setImmediate) {
   }
 }
 
-let requestAnimationFrame = global.requestAnimationFrame
+const requestAnimationFrame = global.requestAnimationFrame
 
 defer.frame = requestAnimationFrame ? function (callback) {
   return push(callbacks.frame, callback, requestAnimationFrame)
@@ -70,7 +70,7 @@ defer.timeout = function (callback, ms) {
     })
   }
 
-  let collection = callbacks.timeout[ms] || (callbacks.timeout[ms] = {})
+  const collection = callbacks.timeout[ms] || (callbacks.timeout[ms] = {})
 
   return push(collection, callback, (callback) => {
     setTimeout(callback, ms)
