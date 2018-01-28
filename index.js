@@ -14,7 +14,9 @@ const push = function (collection, callback, deferrer) {
   for (some in collection) break
 
   if (!some) {
-    deferrer(function (time) {
+    deferrer(function () {
+      const time = Date.now()
+
       for (let id in collection) {
         collection[id](time)
         delete collection[id]
