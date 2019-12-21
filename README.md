@@ -1,70 +1,62 @@
-# Maybe Later.
+# Maybe Later
 
-The module delays the execution of function at a later time.
+`maybe-later` defers the execution of functions at a later time.
 Deferring a function returns a method that cancels the function execution.
 
-## exports
+`maybe-later` is more resource friendly and faster than simply stacking `requestAnimationFrame` or `setTimeout` calls: every deferred function belonging to the same call stack with the same timeout gets executed inside the same call, at the same time.
 
-A function object that provide different ways to delay the execution of a function.
+When using `maybe-later` for animations everything will be synced properly.
+
+## Basic Usage
 
 ```js
-var defer = require("maybe-later")
-var cancel = defer(function(){
-    console.log("hello world")
+const defer = require("maybe-later")
+const cancel1 = defer(() => {
+  console.log("hello immediate")
 })
+
+const cancel2 = defer(() => {
+  console.log("hello timeout")
+}, 100)
 
 // if you change your mind
-cancel()
+cancel1()
+cancel2()
 ```
 
-## method: immediate
+> `defer()` is an alias for `defer.immediate()` when called with no second argument, and `defer.timeout()` when the second argument is a number (timeout in milliseconds).
+
+## Method: immediate
 
 Defers the execution of a function in the next iteration loop, as soon as possible.
-Uses `setImmediate` if available, falls back to `setTimeout 0`.
+Uses `setImmediate` where available, falls back to `setTimeout(0)`.
 
 ```js
-var defer = require("maybe-later")
-defer.immediate(function(){
-    console.log("hello world")
+const defer = require("maybe-later")
+defer.immediate(() => {
+  console.log("hello world")
 })
 ```
 
-### note
-
-`defer()` is an alias for `defer.immediate()` (no second argument)
-and `defer.timeout()` (second argument as timeout in milliseconds).
-
-## method: frame
+## Method: frame
 
 Like `defer.immediate`, however `defer.frame` defers the execution of a function on the next animation frame.
-If `requestAnimationFrame` is not available, `defer.frame` falls back to `setTimeout` with a 1000 / 60 delay (60 fps).
+If `requestAnimationFrame` is not available, `defer.frame` falls back to `setTimeout` with a `1000 / 60` delay.
 
 ```js
-var defer = require("maybe-later")
-defer.frame(function(){
-    console.log("hello world")
+const defer = require("maybe-later")
+defer.frame(() => {
+  console.log("hello world")
 })
 ```
 
-### note
+## Method: timeout
 
-This is more resource friendly and faster than simply stacking `requestAnimationFrame` calls
-(might depend on the native implementation), as every deferred function belonging
-to the same call stack gets executed inside the same `requestAnimationFrame` call.
-
-## method: timeout
-
-Defers the execution of a function on a specified interval.
+Defers the execution of a function after a specified number of milliseconds.
 
 ```js
-var defer = require("maybe-later")
-defer.timeout(function(){
-    console.log("hello world")
+const defer = require("maybe-later")
+defer.timeout(() => {
+  console.log("hello world")
 }, 1000)
 ```
-
-### note
-
-This is more resource friendly and faster than simply stacking `setTimeout` calls
-(might depend on the native implementation), as every deferred function belonging
-to the same call stack with the same timeout gets executed inside the same `setTimeout` call.
