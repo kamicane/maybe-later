@@ -7,7 +7,7 @@ Deferring a function returns a method that cancels the function execution.
 
 When using `maybe-later` for animations everything will be synced properly.
 
-## Basic Usage
+## Basic usage
 
 ```js
 const defer = require('maybe-later')
@@ -76,13 +76,13 @@ fs.watch(FILE_PATH, () => {
 
 ## Method: wait
 
-Returns a promise that resolves after the specified amount of time (or on setImmediate when no time argument is passed).
+Returns a promise that resolves (with the current time as a value) after the specified amount of time (or on setImmediate when no time argument is passed).
 
 ```js
 const defer = require('defer')
 (async () => {
-  await defer.wait(1000)
-  console.log('waited 1 second')
+  const now = await defer.wait(1000)
+  console.log('waited 1 second', now)
 })()
 ```
 
