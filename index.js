@@ -1,6 +1,6 @@
 'use strict'
 
-const callbacks = {
+const CALLBACKS = {
   timeout: Object.create(null),
   frame: Object.create(null),
   immediate: Object.create(null)
@@ -39,7 +39,7 @@ const defer = (callback, argument) =>
 
 if (global.setImmediate) {
   defer.immediate = (callback) =>
-    push(callbacks.immediate, callback, global.setImmediate)
+    push(CALLBACKS.immediate, callback, global.setImmediate)
 } else {
   defer.immediate = (callback) => defer.timeout(callback, 0)
 }
@@ -47,7 +47,7 @@ if (global.setImmediate) {
 const requestAnimationFrame = global.requestAnimationFrame
 
 defer.frame = requestAnimationFrame
-  ? (callback) => push(callbacks.frame, callback, requestAnimationFrame)
+  ? (callback) => push(CALLBACKS.frame, callback, requestAnimationFrame)
   : (callback) => defer.timeout(callback, 1000 / 60)
 
 let mark
@@ -62,17 +62,32 @@ defer.timeout = (callback, ms) => {
   if (!mark) {
     mark = defer.immediate(() => {
       mark = null
-      callbacks.timeout = Object.create(null)
+      CALLBACKS.timeout = Object.create(null)
     })
   }
 
   const collection =
-    callbacks.timeout[ms] ||
-    (callbacks.timeout[ms] = Object.create(null))
+    CALLBACKS.timeout[ms] ||
+    (CALLBACKS.timeout[ms] = Object.create(null))
 
   return push(collection, callback, (callback) => {
     setTimeout(callback, ms)
   })
+}
+
+defer.wait = (...args) =>
+  new Promise((resolve) => {
+    defer(resolve, ...args)
+  })
+
+const CANCELS = Object.create(null)
+
+defer.once = (name, ...args) => {
+  if (CANCELS[name]) {
+    CANCELS[name]()
+    delete CANCELS[name]
+  }
+  return (CANCELS[name] = defer(...args))
 }
 
 module.exports = defer

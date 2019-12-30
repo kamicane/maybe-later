@@ -60,3 +60,28 @@ defer.timeout(() => {
   console.log('hello world')
 }, 1000)
 ```
+
+## Method: once
+
+Automatically cancels the previous call of the same name.
+
+```js
+const fs = require('fs')
+const defer = require('defer')
+
+fs.watch(FILE_PATH, () => {
+  defer.once('file-change', () => console.log('done something expensive'), 1000)
+})
+```
+
+## Method: wait
+
+Returns a promise that resolves after the specified amount of time (or on setImmediate when no time argument is passed).
+
+```js
+const defer = require('defer')
+(async () => {
+  await defer.wait(1000)
+  console.log('waited 1 second')
+})()
+```

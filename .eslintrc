@@ -10,6 +10,7 @@ rules:
   no-extra-parens:
     - error
     - all
+    - returnAssign: false
   eol-last:
     - error
     - always
