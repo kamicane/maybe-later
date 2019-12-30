@@ -1,20 +1,20 @@
 'use strict'
 
 const callbacks = {
-  timeout: {},
-  frame: {},
-  immediate: {}
+  timeout: Object.create(null),
+  frame: Object.create(null),
+  immediate: Object.create(null)
 }
 
 let UID = 0
 
-const push = function (collection, callback, deferrer) {
+const push = (collection, callback, deferrer) => {
   let some = false
   // some is assigned a value if there's anything in collection
   for (some in collection) break
 
   if (!some) {
-    deferrer(function () {
+    deferrer(() => {
       const time = Date.now()
 
       for (const id in collection) {
@@ -24,41 +24,35 @@ const push = function (collection, callback, deferrer) {
     })
   }
 
-  const ID = UID++
-  collection[ID] = callback
+  const id = UID++
+  collection[id] = callback
 
-  return function clear () {
-    delete collection[ID]
+  return () => {
+    delete collection[id]
   }
 }
 
-const defer = function (callback, argument) {
-  return (typeof argument === 'number')
+const defer = (callback, argument) =>
+  typeof argument === 'number'
     ? defer.timeout(callback, argument)
     : defer.immediate(callback, argument)
-}
 
 if (global.setImmediate) {
-  defer.immediate = function (callback) {
-    return push(callbacks.immediate, callback, global.setImmediate)
-  }
+  defer.immediate = (callback) =>
+    push(callbacks.immediate, callback, global.setImmediate)
 } else {
-  defer.immediate = function (callback) {
-    return defer.timeout(callback, 0)
-  }
+  defer.immediate = (callback) => defer.timeout(callback, 0)
 }
 
 const requestAnimationFrame = global.requestAnimationFrame
 
-defer.frame = requestAnimationFrame ? function (callback) {
-  return push(callbacks.frame, callback, requestAnimationFrame)
-} : (callback) => {
-  return defer.timeout(callback, 1000 / 60)
-}
+defer.frame = requestAnimationFrame
+  ? (callback) => push(callbacks.frame, callback, requestAnimationFrame)
+  : (callback) => defer.timeout(callback, 1000 / 60)
 
 let mark
 
-defer.timeout = function (callback, ms) {
+defer.timeout = (callback, ms) => {
   // Destroy the callbacks.timeout collection, so that same-timer timeouts
   // added after the runloop get assigned to a different sub collections.
   // For example, adding a 40ms timeout, then waiting 20ms, then adding
@@ -66,13 +60,15 @@ defer.timeout = function (callback, ms) {
   // squished together which is obviously wrong. This makes sure that
   // timeout collections only live for a single runloop.
   if (!mark) {
-    mark = defer.immediate(function () {
+    mark = defer.immediate(() => {
       mark = null
-      callbacks.timeout = {}
+      callbacks.timeout = Object.create(null)
     })
   }
 
-  const collection = callbacks.timeout[ms] || (callbacks.timeout[ms] = {})
+  const collection =
+    callbacks.timeout[ms] ||
+    (callbacks.timeout[ms] = Object.create(null))
 
   return push(collection, callback, (callback) => {
     setTimeout(callback, ms)

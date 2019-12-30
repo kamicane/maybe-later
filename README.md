@@ -10,13 +10,13 @@ When using `maybe-later` for animations everything will be synced properly.
 ## Basic Usage
 
 ```js
-const defer = require("maybe-later")
+const defer = require('maybe-later')
 const cancel1 = defer(() => {
-  console.log("hello immediate")
+  console.log('hello immediate')
 })
 
 const cancel2 = defer(() => {
-  console.log("hello timeout")
+  console.log('hello timeout')
 }, 100)
 
 // if you change your mind
@@ -32,9 +32,9 @@ Defers the execution of a function in the next iteration loop, as soon as possib
 Uses `setImmediate` where available, falls back to `setTimeout(0)`.
 
 ```js
-const defer = require("maybe-later")
+const defer = require('maybe-later')
 defer.immediate(() => {
-  console.log("hello world")
+  console.log('hello world')
 })
 ```
 
@@ -44,9 +44,9 @@ Like `defer.immediate`, however `defer.frame` defers the execution of a function
 If `requestAnimationFrame` is not available, `defer.frame` falls back to `setTimeout` with a `1000 / 60` delay.
 
 ```js
-const defer = require("maybe-later")
+const defer = require('maybe-later')
 defer.frame(() => {
-  console.log("hello world")
+  console.log('hello world')
 })
 ```
 
@@ -55,8 +55,8 @@ defer.frame(() => {
 Defers the execution of a function after a specified number of milliseconds.
 
 ```js
-const defer = require("maybe-later")
+const defer = require('maybe-later')
 defer.timeout(() => {
-  console.log("hello world")
+  console.log('hello world')
 }, 1000)
 ```

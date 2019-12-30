@@ -1,0 +1,27 @@
+extends: standard
+rules:
+  max-len:
+    - warn
+    - code: 80
+      tabWidth: 2
+  arrow-parens:
+    - error
+    - always
+  no-extra-parens:
+    - error
+    - all
+  eol-last:
+    - error
+    - always
+  linebreak-style:
+    - error
+    - unix
+  function-call-argument-newline:
+    - error
+    - consistent
+  array-bracket-newline:
+    - error
+    - consistent
+  function-paren-newline:
+    - error
+    - consistent
