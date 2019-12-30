@@ -85,3 +85,8 @@ const defer = require('defer')
   console.log('waited 1 second')
 })()
 ```
+
+## Time argument
+
+A time argument is passed to each function of the stack, which is the date at which the stack has begun processing.
+This ensures each function of the same stack receives the same time argument.
